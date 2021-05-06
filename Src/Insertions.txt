@@ -1,0 +1,90 @@
+--before inserting into wishlist_product and Todays_deals
+--read the comments beside them :D
+
+
+
+INSERT INTO Users (username,first_name,last_name,password,email)
+VALUES('nada.sharaf','nada','sharaf','pass7','nada.sharaf@guc.edu.eg')
+INSERT INTO Users (username,first_name,last_name,password,email)
+VALUES('hadeel.adel','hadeel','adel','pass13','hadeel.adel@guc.edu.eg')
+INSERT INTO Users (username,first_name,last_name,password,email)
+VALUES('mohamed.tamer','mohamed','tamer','pass16','mohamed.tamer@guc.edu.eg')
+INSERT INTO Users (username,first_name,last_name,password,email)
+VALUES('hana.aly','hana','aly','pass1','hana.aly@guc.edu.eg')
+INSERT INTO Users (username,first_name,last_name,password,email)
+VALUES('ammar.yasser','ammar','yasser','pass4','ammar.yasser@guc.edu.eg')
+
+INSERT into User_Addresses(address,username)
+values('New Cairo','hana.aly'),('Heliopolis','hana.aly')
+
+INSERT into user_mobile_numbers(mobile_number,username)
+values('01111111111','hana.aly'),('1211555411','hana.aly')
+
+INSERT INTO Customer(username,points)
+values('ammar.yasser',15)
+
+INSERT INTO Admins(username)
+VALUES('hana.aly'),('nada.sharaf')
+
+
+INSERT INTO Delivery_Person(is_activated,username)
+VALUES(1,'mohamed.tamer')
+
+
+
+INSERT INTO Vendors(username,activated,company_name,bank_acc_no,admin_username)
+VALUES('hadeel.adel',1,'Dello','47449349234','hana.aly')
+
+INSERT INTO Credit_Card(number,expiry_date,cvv_code)
+values('4444-5555-6666-8888',2028-10-19,'232')--DATETIME - format: YYYY-MM-DD HH:MI:SS
+
+
+insert into Product(product_name,category,product_description,price,final_price,color,available,rate,vendor_username)
+Values
+('Bag', 'Fashion', 'backbag', 100, 100 ,'yellow', 1, 0 ,'hadeel.adel'),
+('blue pen', 'stationary', 'useful pen', 10 ,10 ,'Blue',1, 0 ,'hadeel.adel'),
+('blue pen', 'stationary', 'useful pen', 10 ,10 ,'Blue' ,0, 0 ,'hadeel.adel')
+
+
+
+Insert into Delivery(type,time_duration,fees)
+values('pick-up', 7,10),
+('regular' ,14, 30),
+('speedy', 1 ,50)
+
+
+SET IDENTITY_INSERT Todays_Deals ON
+INSERT INTO Todays_Deals(deal_id,deal_amount,admin_username,expiry_date)
+values(1 ,30, 'hana.aly', 2019-11-30 ),
+(2, 40, 'hana.aly', 2019-11-18 ),
+(3, 50, 'hana.aly' ,2019-12-12)
+--sama.walid is not in the admins table
+--,(4 ,10, 'sama.walid', 2019-11-12 )
+SET IDENTITY_INSERT Todays_Deals OFF
+
+SET IDENTITY_INSERT offer ON
+insert into offer(offer_id,offer_amount,expiry_date)
+values(1,50,30/11/2019)
+SET IDENTITY_INSERT offer OFF
+
+select *
+from Todays_Deals
+
+INSERT INTO Wishlist(username,name)
+values('ammar.yasser','fashion')
+
+
+insert into Giftcard(code,expiry_date,amount)
+values('G101',18/11/2019,100)
+
+
+INSERT INTO Customer_CreditCard(customer_name,cc_number)
+values('ammar.yasser','4444-5555-6666-8888')
+
+
+
+
+--execute this after executing post product in the tests
+-- so that  product 2 will be added
+insert into Wishlist_Product(username,wish_name,serial_no)
+values('ammar.yasser', 'fashion',2)

@@ -1,0 +1,186 @@
+
+CREATE TABLE Users(
+username varchar(20) PRIMARY KEY ,
+password varchar(20),
+first_name VARCHAR(20),
+last_name varchar(20),
+email varchar(50)
+);
+
+CREATE TABLE user_mobile_numbers(
+mobile_number varchar(20) ,
+username varchar(20) ,
+PRIMARY KEY(mobile_number,username),
+FOREIGN KEY(username) REFERENCES Users ON DELETE CASCADE 
+);
+
+Create TABLE User_Addresses(
+address varchar(100) ,
+username varchar(20) ,
+PRIMARY KEY(username,address),
+FOREIGN KEY(username) REFERENCES Users ON DELETE CASCADE 
+);
+
+CREATE TABLE Customer(
+username varchar (20)  ,
+points int default 0,
+PRIMARY KEY(username),
+FOREIGN KEY(username) REFERENCES Users ON DELETE CASCADE 
+);
+
+CREATE TABLE Admins(
+username varchar (20)  ,
+PRIMARY KEY(username),
+FOREIGN KEY(username) REFERENCES Users ON DELETE CASCADE 
+);
+
+CREATE TABLE Vendors(
+username varchar (20)  ,
+activated bit default 0,
+company_name varchar(20),
+bank_acc_no VARCHAR(20),
+admin_username varchar(20),
+PRIMARY KEY(username),
+FOREIGN KEY(username) REFERENCES Users  ON DELETE CASCADE ,
+FOREIGN KEY (admin_username) REFERENCES Admins -- we need to handle the cascade in the procedures
+);
+
+CREATE TABLE Delivery_Person(
+username varchar (20)  ,
+is_activated bit,
+PRIMARY KEY(username),
+FOREIGN KEY(username) REFERENCES Users ON DELETE CASCADE
+);
+
+CREATE TABLE Credit_Card(
+number varchar(20),
+expiry_date DATETIME,
+cvv_code int,
+PRIMARY KEY (number)
+);
+
+CREATE TABLE Delivery(
+id int identity primary key,
+type varchar(20),
+time_duration int,
+fees decimal(10,2), 
+username varchar(20) foreign key references Admins ON DELETE CASCADE 
+
+);
+Create table Giftcard(
+code varchar(10) primary key,
+expiry_date DATETIME,
+amount int,
+username varchar(20) foreign key references Users,
+);
+
+
+Create table Orders(
+order_no int Primary key identity, 
+order_date DATETIME, 
+total_amount INT, 
+cash_amount decimal(10,2), 
+credit_amount decimal(10,2), 
+payment_type varchar(20), 
+order_status varchar(20), 
+remaining_days int, 
+time_limit int, 
+customer_name varchar(20) FOREIGN KEY REFERENCES Customer ON DELETE CASCADE , 
+delivery_id int FOREIGN KEY REFERENCES Delivery  , 
+creditCard_number VARCHAR(20) FOREIGN KEY REFERENCES Credit_Card, --when need to handle the updates in the procedure
+Gift_Card_code_used varchar(10) foreign key references Giftcard  --whenever one of the keys is updated we update the order too
+);
+
+Create table Product(
+serial_no int primary key identity,
+product_name varchar(20), 
+category varchar(20), 
+product_description varchar(100), 
+price decimal(10,2),
+final_price decimal(10,2), 
+color varchar(20), 
+available bit, 
+rate int,
+vendor_username varchar(20) foreign key references Vendors , 
+customer_username varchar(20) foreign key references Customer , 
+customer_order_id int foreign key references Orders -- when something here changes we need to handle it in the proceduress
+);
+
+CREATE TABLE CustomerAddstoCartProduct(
+serial_no int foreign key references Product on delete cascade ,
+customer_name varchar(20) foreign key references Customer on delete cascade
+PRIMARY KEY(serial_no,customer_name)
+);
+
+CREATE TABLE Todays_Deals(
+deal_id int primary key IDENTITY, 
+deal_amount int, 
+expiry_date DATETIME, 
+admin_username varchar(20) foreign key references Admins
+);
+
+CREATE TABLE Todays_Deals_Product(
+deal_id int foreign key references Todays_Deals, 
+serial_no int foreign key references Product, 
+issue_date DATETIME,
+PRIMARY KEY(deal_id,serial_no)
+);
+
+CREATE TABLE offer(
+offer_id INT PRIMARY KEY identity, 
+offer_amount INT, 
+expiry_date DATETIME
+);
+
+create table offersOnProduct(
+offer_id int foreign key references offer on delete cascade ,
+serial_no int foreign key references Product on delete cascade ,
+primary key(offer_id,serial_no)
+);
+
+create table Customer_Question_Product(
+serial_no int foreign key references Product ,
+customer_name varchar(20) foreign key references Customer on delete cascade, --hena  bardo law 7aga et3malaha edit men dol lazem neghayrha
+question varchar(50),
+answer varchar(50),
+primary key(serial_no,customer_name)
+);
+
+create table Wishlist(
+username varchar(20) references Customer ,
+name varchar(20),
+primary key(username,name)
+);
+
+
+CREATE TABLE Wishlist_Product(
+username varchar(20),
+wish_name varchar(20),
+serial_no int foreign key references Product,
+FOREIGN KEY(username,wish_name) references Wishlist on delete cascade ,
+PRIMARY KEY(username,wish_name,serial_no)
+);
+
+CREATE TABLE Admin_Customer_Giftcard(
+code varchar(10) FOREIGN KEY REFERENCES Giftcard, 
+customer_name VARCHAR(20) FOREIGN KEY REFERENCES Customer on delete cascade, 
+admin_username VARCHAR(20)FOREIGN KEY REFERENCES Admins , --hena bardo
+remaining_points int,
+PRIMARY KEY(code,customer_name,admin_username)
+);
+
+create TABLE Admin_Delivery_Order(
+delivery_username VARCHAR(20) FOREIGN KEY REFERENCES Delivery_person on delete cascade,
+order_no int foreign key references Orders , 
+admin_username varchar(20) foreign key references Admins, 
+delivery_window varchar(20),
+PRIMARY KEY(delivery_username,order_no,admin_username)
+);
+
+CREATE TABLE Customer_CreditCard(
+customer_name VARCHAR(20)FOREIGN KEY REFERENCES Customer on delete cascade, 
+cc_number varchar(20) foreign key references Credit_Card on delete cascade,
+PRIMARY KEY(customer_name,cc_number)
+);
+
+
